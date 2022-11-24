@@ -25,10 +25,17 @@ MESSAGE = "*" * BYTES
 #
 # Process.waitall
 
-REQUESTS_NUMBER.times do
+FAILS = Hash.new(0)
+
+REQUESTS_NUMBER.times do |i|
   connection = TCPSocket.new 'localhost', 2000
   connection.write(MESSAGE)
   connection.read(BYTES)
+  connection.close
+rescue
+  FAILS[i] += 1
+  puts "Request number #{i} failed #{FAILS[i]}"
+  retry
 end
 
 after = Process.clock_gettime(Process::CLOCK_MONOTONIC)
