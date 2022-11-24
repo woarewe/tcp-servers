@@ -4,6 +4,9 @@ require 'socket'
 require 'logger'
 require 'concurrent-ruby'
 
+require 'ruby-prof'
+
+LIMIT = 50
 PORT = 2000
 BYTES = 100 * 1024 * 1024
 CORES_NUMBER = 10
@@ -33,6 +36,7 @@ class Serial < Server
       handle_request(server.accept)
       count_request
       logger.info(requests)
+      break if requests == LIMIT
     end
   end
 
@@ -103,6 +107,7 @@ class CustomFiber < Server
       task = handle_connection(connection)
       tasks.push(task)
     rescue IO::WaitReadable, IO::EAGAINWaitReadable => error
+      break if requests == LIMIT
       handle_nonblock_accept
       retry
     end
@@ -177,4 +182,8 @@ when 'custom-thread-pool' then CustomThreadPool.new(PORT)
 when 'custom-fiber' then CustomFiber.new(PORT)
 end
 
+RubyProf.start
 server.start
+result = RubyProf.stop
+printer = RubyProf::FlatPrinter.new(result)
+printer.print($stdout)

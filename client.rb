@@ -11,7 +11,7 @@ before = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
 BYTES = 100 * 1024 * 1024
 MESSAGE = "*" * BYTES
-
+#
 CORES_NUMBER.times do
   Process.fork do
     TASKS_PER_WORKER.times do
@@ -24,8 +24,8 @@ CORES_NUMBER.times do
 end
 
 Process.waitall
-
-# 1.times do |i|
+#
+# 2.times do |i|
 #   connection = TCPSocket.new 'localhost', 2000
 #   connection.write(MESSAGE)
 #   connection.read(BYTES)
