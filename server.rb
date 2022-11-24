@@ -66,10 +66,34 @@ class ThreadPool < Server
   end
 end
 
+class CustomThreadPool < Server
+  def start
+    logger = Logger.new($stdout)
+    workers = Array.new(CORES_NUMBER) do
+      Thread.new do
+        loop do
+          handle_request(server.accept)
+          count_request
+          logger.info(requests)
+        end
+      end
+    end
+    workers.each(&:join)
+  end
+
+  def handle_request(connection)
+    connection.read(BYTES)
+    data = File.read(File.expand_path('./data.txt', __dir__))
+    connection.write(data)
+    connection.close
+  end
+end
+
 
 server = case ARGV[0]
 when 'serial' then Serial.new(PORT)
 when 'thread-pool' then ThreadPool.new(PORT)
+when 'custom-thread-pool' then CustomThreadPool.new(PORT)
 end
 
 server.start
