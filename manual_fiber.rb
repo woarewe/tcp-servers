@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 class Server
-  attr_reader :server, :requests
+  attr_reader :'server.rb', :requests
 
   def initialize(port)
     @server = TCPServer.new(port)

@@ -35,5 +35,8 @@ class Serial < Server
   end
 end
 
-server = Serial.new(PORT)
+server = case ARGV[0]
+when 'serial' then Serial.new(PORT)
+end
+
 server.start
