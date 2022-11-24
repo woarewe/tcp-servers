@@ -2,7 +2,7 @@
 
 require 'socket'
 
-REQUESTS_NUMBER = 1_000
+REQUESTS_NUMBER = 50
 CORES_NUMBER = 10
 
 TASKS_PER_WORKER = (REQUESTS_NUMBER / CORES_NUMBER).freeze
@@ -24,6 +24,13 @@ CORES_NUMBER.times do
 end
 
 Process.waitall
+
+# 1.times do |i|
+#   connection = TCPSocket.new 'localhost', 2000
+#   connection.write(MESSAGE)
+#   connection.read(BYTES)
+#   connection.close
+# end
 
 after = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
